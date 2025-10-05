@@ -9,34 +9,52 @@ connect();
 export async function POST(request: NextRequest) {
   try {
     const reqBody = await request.json();
-    const { email, passowrd } = reqBody;
+    const { email, password } = reqBody;
 
+    // check if user exists
     const user = await User.findOne({ email });
     if (!user) {
-      return NextResponse.json({ error: "user does not exist" }, { status: 400 });
+      return NextResponse.json(
+        { error: "User does not exist" },
+        { status: 400 }
+      );
     }
 
-    // check for password
-    const validPassword = await bcryptjs.compare(passowrd, user.password);
+    // check password validity
+    const validPassword = await bcryptjs.compare(password, user.password);
+    if (!validPassword) {
+      return NextResponse.json(
+        { error: "Invalid password" },
+        { status: 401 }
+      );
+    }
 
     // create token data
     const tokenData = {
       id: user._id,
       username: user.username,
-      email: user.email
-    }
-    // create token
-    const token = jwt.sign(tokenData, process.env.TOKEN_SECRET!, { expiresIn: "1d" });
+      email: user.email,
+    };
+
+    const token = jwt.sign(tokenData, process.env.TOKEN_SECRET!, {
+      expiresIn: "1d",
+    });
+
     const response = NextResponse.json({
       message: "Login successful",
       success: true,
     });
 
-    response.cookies.set("token", token, { httpOnly: true, path: "/" });
+    response.cookies.set("token", token, {
+      httpOnly: true,
+      path: "/",
+      maxAge: 24 * 60 * 60, // 1 day
+    });
 
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : "Internal Server Error";
-    return NextResponse.json({ error: errorMessage }, { status: 500 });
+    return response;
+  } catch (error: any) {
+    console.error("Login error:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 

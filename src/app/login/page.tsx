@@ -1,18 +1,45 @@
 "use client";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [user, setUser] = React.useState({
     email: "",
     password: "",
   });
 
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const onLogin = async () => {
-    // TODO: add axios call here
+    try {
+
+      setLoading(true);
+      const response = await axios.post("/api/users/login", user);
+      console.log("Login success", response.data);
+      toast.success("Login success");
+      router.push("/profile");
+
+
+    } catch (error : any) {
+      console.log("Login failed:", error.response?.data || error.message);
+      toast.error(error.response?.data?.error || "Login failed");
+    } finally {
+      setLoading(false);
+    }
   };
+
+  useEffect(() => {
+    if (user.email && user.password) {
+      setButtonDisabled(false);
+    } else {
+      setButtonDisabled(true);
+    }
+  }, [user]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 via-white to-green-200 px-4">
@@ -28,7 +55,7 @@ export default function LoginPage() {
             </label>
             <input
               className="w-full p-3 text-base border text-black rounded-lg border-gray-300
-               focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+              focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
               type="email"
               id="email"
               value={user.email}
@@ -43,7 +70,7 @@ export default function LoginPage() {
             </label>
             <input
               className="w-full p-3 text-base border text-black rounded-lg border-gray-300
-               focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+              focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
               type="password"
               id="password"
               value={user.password}
