@@ -1,40 +1,58 @@
 "use client";
 import Link from "next/link";
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 
 export default function SignUpPage() {
+  const router = useRouter();
+
   const [user, setUser] = React.useState({
     username: "",
     email: "",
     password: "",
   });
 
+  const [buttonDisabled, setButtonDisabled] = React.useState(true);
+  const [loading, setLoading] = React.useState(false);
+
   const onSignup = async () => {
-    // TODO: add axios call here
+    try {
+      setLoading(true);
+      const response = await axios.post("/api/users/signup", user);
+      console.log("Signup success:", response.data);
+
+      // redirect after success
+      router.push("/login");
+    } catch (error: any) {
+      console.log("Signup failed:", error.response?.data || error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const [buttonDisable, setButtonDisable] = React.useState(false);
   useEffect(() => {
-    if (user.username.length > 0 && user.email.length > 0 && user.password.length > 0) {
-      setButtonDisable(false);
+    if (user.username && user.email && user.password) {
+      setButtonDisabled(false);
+    } else {
+      setButtonDisabled(true);
     }
-
-    setButtonDisable(true);
-  }, [user])
+  }, [user]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 via-white to-green-200 px-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 space-y-6 transform transition-all hover:shadow-2xl">
         <h1 className="text-3xl font-bold text-center text-gray-800">
-          Create an Account
+          Create an account
         </h1>
         <p className="text-center text-gray-500">Join us and get started 🚀</p>
 
         <div className="space-y-5">
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-600 mb-1">
+            <label
+              htmlFor="username"
+              className="block text-sm font-medium text-gray-600 mb-1"
+            >
               Username
             </label>
             <input
@@ -43,13 +61,18 @@ export default function SignUpPage() {
               type="text"
               id="username"
               value={user.username}
-              onChange={(e) => setUser({ ...user, username: e.target.value })}
+              onChange={(e) =>
+                setUser({ ...user, username: e.target.value })
+              }
               placeholder="Enter your username"
             />
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-600 mb-1">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-600 mb-1"
+            >
               Email
             </label>
             <input
@@ -64,7 +87,10 @@ export default function SignUpPage() {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-600 mb-1">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-600 mb-1"
+            >
               Password
             </label>
             <input
@@ -73,16 +99,23 @@ export default function SignUpPage() {
               type="password"
               id="password"
               value={user.password}
-              onChange={(e) => setUser({ ...user, password: e.target.value })}
+              onChange={(e) =>
+                setUser({ ...user, password: e.target.value })
+              }
               placeholder="••••••••"
             />
           </div>
 
           <button
             onClick={onSignup}
-            className="w-full py-3 text-white text-lg font-semibold rounded-lg bg-green-600 hover:bg-green-700 transition-all shadow-md hover:shadow-lg"
+            disabled={buttonDisabled || loading}
+            className={`w-full py-3 text-lg font-semibold rounded-lg transition-all shadow-md
+              ${buttonDisabled || loading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-green-600 hover:bg-green-700 text-white"
+              }`}
           >
-            Sign Up
+            {loading ? "Creating Account..." : "Sign Up"}
           </button>
         </div>
 
@@ -99,3 +132,4 @@ export default function SignUpPage() {
     </div>
   );
 }
+
