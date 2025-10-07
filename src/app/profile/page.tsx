@@ -17,14 +17,14 @@ export default function ProfilePage() {
 
       router.push("/login");
 
-    } catch (error : any) {
+    } catch (error: any) {
       console.log(error.message);
       toast.error(error.message);
     }
   }
 
   const getUserDetail = async () => {
-    const res = await axios.get('api/users/user');
+    const res = await axios.get('/api/users/user');
     console.log(res.data);
     setData(res.data.data._id);
   }
@@ -32,8 +32,8 @@ export default function ProfilePage() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
       <h1>Profile</h1>
-      <br/>
-      <h2>{ data === "" ? "no data found" : <Link href={`/profile/${data}`}>{data}</Link> }</h2>
+      <br />
+      <h2>{data === "" ? "no data found" : <Link href={`/profile/${data}`}>{data}</Link>}</h2>
 
       <button
         onClick={logout}
