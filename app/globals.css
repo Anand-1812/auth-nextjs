@@ -87,7 +87,7 @@
   --foreground: oklch(0.985 0 0);
 
   /* Cards/Popovers slightly lighter gray */
-  --card: oklch(0.13 0 0);
+  --card: oklch(0.09 0 0);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.13 0 0);
   --popover-foreground: oklch(0.985 0 0);
