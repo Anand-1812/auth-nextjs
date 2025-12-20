@@ -19,7 +19,7 @@ const Login = () => {
         {/* Header */}
         <div className="text-center mb-6">
           <h1 className="text-2xl font-bold text-foreground">
-            Signup
+            Login
           </h1>
         </div>
 
@@ -73,9 +73,9 @@ const Login = () => {
               className="cursor-pointer px-4 bg-primary text-primary-foreground rounded-lg
               py-2.5 text-sm font-medium transition hover:opacity-90 active:scale-[0.98]"
             >
-              Sign up
+              login
             </button>
-            <Link href="/signup" className="text-center">No Account? <span className="text-blue-400 hover:text-blue-600">signup here</span></Link>
+            <Link href="/signup" className="text-center">Don't have account ? <span className="text-blue-400 hover:text-blue-600">signup</span></Link>
           </div>
         </div>
       </div>

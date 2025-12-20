@@ -1,15 +1,44 @@
 "use client";
+
+import axios from "axios";
 import Link from "next/link";
+import { toast } from "sonner";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const Signup = () => {
+  const router = useRouter();
+
   const [user, setUser] = useState({
     email: "",
     password: "",
     username: "",
   });
 
-  const onSignup = () => { };
+  const [loading, setLoading] = useState(false);
+
+  const isDisabled =
+    !user.email || !user.password || !user.username || loading;
+
+  const onSignup = async () => {
+    if (isDisabled) return;
+
+    try {
+      setLoading(true);
+      await axios.post("/api/users/signup", user);
+      toast.success("Signup successful");
+      router.push("/login");
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.error || "Signup failed"
+      );
+      setTimeout(() => {
+        setLoading(false)
+      }, 100)
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
@@ -40,8 +69,7 @@ const Signup = () => {
               onChange={(e) =>
                 setUser({ ...user, username: e.target.value })
               }
-              className="bg-input text-foreground border border-border rounded-lg
-              px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+              className="bg-input text-foreground border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
             />
           </div>
 
@@ -60,8 +88,7 @@ const Signup = () => {
               onChange={(e) =>
                 setUser({ ...user, email: e.target.value })
               }
-              className="bg-input text-foreground border border-border rounded-lg
-              px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+              className="bg-input text-foreground border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
             />
           </div>
 
@@ -80,22 +107,35 @@ const Signup = () => {
               onChange={(e) =>
                 setUser({ ...user, password: e.target.value })
               }
-              className="bg-input text-foreground border border-border rounded-lg
-              px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
+              className="bg-input text-foreground border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
             />
           </div>
 
-          {/* Button */}
-          <div className="flex flex-col gap-3 justify-center">
+          {/* Actions */}
+          <div className="flex flex-col gap-3 pt-2">
             <button
               onClick={onSignup}
-              className="cursor-pointer px-4 bg-primary text-primary-foreground rounded-lg
-            py-2.5 text-sm font-medium transition hover:opacity-90 active:scale-[0.98]"
+              disabled={isDisabled}
+              className={`
+                rounded-lg py-2.5 text-sm font-medium transition
+                ${isDisabled
+                  ? "bg-muted text-muted-foreground cursor-not-allowed"
+                  : "bg-primary text-primary-foreground hover:opacity-90 active:scale-[0.98]"
+                }
+              `}
             >
-              Sign up
+              {loading ? "Signing up..." : "Sign up"}
             </button>
-            <Link href="/login" className="text-center text-blue-500 hover:text-blue-600">Visit login page</Link>
+
+            <Link
+              href="/login"
+              className="text-center text-sm text-muted-foreground hover:text-foreground transition"
+            >
+              Already have an account?{" "}
+              <span className="text-primary font-medium">Login</span>
+            </Link>
           </div>
+
         </div>
       </div>
     </div>
