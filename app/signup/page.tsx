@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useState } from "react";
 
 const Signup = () => {
@@ -85,14 +86,15 @@ const Signup = () => {
           </div>
 
           {/* Button */}
-          <div className="flex justify-center">
+          <div className="flex flex-col gap-3 justify-center">
             <button
               onClick={onSignup}
-              className="cursor-pointer px-4 py-3 bg-primary text-primary-foreground rounded-lg
+              className="cursor-pointer px-4 bg-primary text-primary-foreground rounded-lg
             py-2.5 text-sm font-medium transition hover:opacity-90 active:scale-[0.98]"
             >
               Sign up
             </button>
+            <Link href="/login" className="text-center text-blue-500 hover:text-blue-600">Visit login page</Link>
           </div>
         </div>
       </div>
