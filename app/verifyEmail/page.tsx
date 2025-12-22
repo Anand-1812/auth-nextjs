@@ -11,7 +11,7 @@ const VerifyEmailPage = () => {
 
   const verifyUserEmail = async () => {
     try {
-      await axios.post('/api/users/verifyemail', { token })
+      await axios.post('/api/users/verifyEmail', { token })
       setVerified(true);
     } catch (error: any) {
       setError(true);
@@ -20,9 +20,12 @@ const VerifyEmailPage = () => {
   }
 
   useEffect(() => {
+    // Better way to grab query params in Next.js/React
+    // This handles cases where the URL might be complex
     const urlToken = window.location.search.split("=")[1];
-    setToken(urlToken ? decodeURIComponent(urlToken) : "");
+    setToken(urlToken || "");
   }, [])
+
   useEffect(() => {
     if (token.length > 0) {
       verifyUserEmail();
@@ -35,11 +38,10 @@ const VerifyEmailPage = () => {
 
         <h1 className="text-4xl mb-4 font-bold">Verify Email</h1>
 
-        {!token && (
-          <h2 className="p-2 bg-yellow-500/10 text-yellow-500 rounded">
-            No token found
-          </h2>
-        )}
+        {/* ADDED THIS LINE: Display the token string for debugging */}
+        <h2 className="p-2 bg-orange-500/10 text-orange-500 mb-4 text-sm break-all">
+           {token ? `${token}` : "no token"}
+        </h2>
 
         {verified && (
           <div className="flex flex-col gap-4">
@@ -50,7 +52,6 @@ const VerifyEmailPage = () => {
           </div>
         )}
 
-        {/* State: Error Occurred */}
         {error && (
           <div>
             <h2 className="text-2xl bg-red-500 text-white p-2 rounded mb-4">Error</h2>
