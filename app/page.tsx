@@ -1,4 +1,5 @@
 import { ModeToggle } from "@/components/mode-toggle"
+import Link from "next/link"
 
 const Page = () => {
   return (
@@ -9,6 +10,7 @@ const Page = () => {
         <h1 className="text-3xl font-semibold text-indigo-500">
           Auth App
         </h1>
+        <Link href="/signup">Singup</Link>
         <ModeToggle />
       </header>
 
