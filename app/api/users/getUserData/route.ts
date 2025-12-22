@@ -4,18 +4,26 @@ import User from "@/models/userModel";
 import { connect } from "@/db/connectDB";
 
 export async function GET(request: NextRequest) {
-  connect()
-  try {
+  // 1. Await the connection
+  await connect();
 
-    const userID = await getTokenData(request)
-    const user = User.findOne(userID._id).select("-password")
+  try {
+    const userId = await getTokenData(request);
+
+    // 3. Await the DB query & use findById for cleaner syntax
+    const user = await User.findById(userId).select("-password");
+
+    // 4. Safety check (in case user was deleted but token is valid)
+    if (!user) {
+        return NextResponse.json({ error: "User not found" }, { status: 404 })
+    }
 
     return NextResponse.json({
       message: "User found",
       data: user,
-    })
+    });
 
   } catch (error: any) {
-    return NextResponse.json({error: error.message}, {status: 400})
+    return NextResponse.json({ error: error.message }, { status: 400 });
   }
 }
