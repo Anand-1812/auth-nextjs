@@ -1,10 +1,38 @@
 "use client"
 
-const ForgotPassword = () => {
+import axios from "axios";
+import { useState } from "react"
+import { toast } from "sonner";
+import { useRouter, useSearchParams } from "next/navigation";
 
-  const password: string = "";
+const ResetPassword = () => {
+
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token");
+
+  const [password, setPassword] = useState("");
 
   const resetPass = async () => {
+    if (!token) {
+      toast.error("Invalid or expired reset link");
+      return;
+    }
+
+    if (!password) {
+      toast.error("Please enter a new password");
+      return;
+    }
+
+    try {
+
+      await axios.post("/api/users/reset-password", {token, password})
+      toast.success("password changed")
+      router.push("/login")
+
+    } catch (error) {
+      toast.error("password reset failed")
+    }
 
   }
 
@@ -24,19 +52,19 @@ const ForgotPassword = () => {
 
         {/* Form */}
         <div className="space-y-4">
+
           <div className="flex flex-col gap-2 text-left">
             <label
-              htmlFor="email"
+              htmlFor="password"
               className="text-sm font-medium text-muted-foreground"
             >
-              password
+              New Password
             </label>
             <input
-              id="email"
-              type="email"
+              id="password"
+              type="password"
               value={password}
-              onChange={(e) => { password: e.target.value }}
-              placeholder="you@example.com"
+              onChange={(e) => setPassword(e.target.value)}
               className="rounded-lg border border-border bg-input px-3 py-2 text-sm text-foreground
               focus:outline-none focus:ring-2 focus:ring-ring"
             />
@@ -56,5 +84,4 @@ const ForgotPassword = () => {
   )
 }
 
-export default ForgotPassword
-
+export default ResetPassword

@@ -3,21 +3,20 @@
 import axios from "axios";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const ForgotPassword = () => {
 
   const router = useRouter();
-  const email: string = "";
+  const [email, setEmail] = useState("");
 
   const resetPass = async () => {
     try {
-      await axios.post("/api/users/ForgotPassword", email)
+      await axios.post("/api/users/forgot-password", { email })
 
       toast.success("Email verified");
-      router.push("/resetpassword")
-
     } catch (error: any) {
-      toast.error(error?.response?.data?.error || "Login failed");
+      toast.error(error?.response?.data?.error || "email verfication failed");
     }
   }
 
@@ -48,7 +47,7 @@ const ForgotPassword = () => {
               id="email"
               type="email"
               value={email}
-              onChange={(e) => { email: e.target.value }}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
               className="rounded-lg border border-border bg-input px-3 py-2 text-sm text-foreground
               focus:outline-none focus:ring-2 focus:ring-ring"
