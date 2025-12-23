@@ -69,6 +69,9 @@ const Login = () => {
             <Link href="/signup" className="text-center text-sm text-muted-foreground">
               Don't have account? <span className="text-blue-400 hover:text-blue-600 transition">Signup</span>
             </Link>
+            <Link href="/forgotpassword" className="text-center hover:text-blue-400 text-sm text-muted-foreground">
+              frogot password
+            </Link>
           </div>
         </div>
       </div>

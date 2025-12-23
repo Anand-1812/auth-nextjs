@@ -20,8 +20,6 @@ const VerifyEmailPage = () => {
   }
 
   useEffect(() => {
-    // Better way to grab query params in Next.js/React
-    // This handles cases where the URL might be complex
     const urlToken = window.location.search.split("=")[1];
     setToken(urlToken || "");
   }, [])
@@ -40,7 +38,7 @@ const VerifyEmailPage = () => {
 
         {/* ADDED THIS LINE: Display the token string for debugging */}
         <h2 className="p-2 bg-orange-500/10 text-orange-500 mb-4 text-sm break-all">
-           {token ? `${token}` : "no token"}
+          {token ? `${token}` : "no token"}
         </h2>
 
         {verified && (
